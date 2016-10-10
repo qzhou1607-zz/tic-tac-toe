@@ -55,3 +55,10 @@ and open the template in the editor.
     border:none;
     font-family: 'Architects Daughter', Helvetica, sans-serif;
 }
+
+#my-canvas {
+  width: 330px;
+  height: 330px;
+  margin-top:10px;
+  margin-left:10px;
+}
