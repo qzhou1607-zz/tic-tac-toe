@@ -1,0 +1,57 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2016, 9:52:31 AM
+    Author     : Qing_Zhou
+*/
+.container {
+    background: rgb(248,180,135);
+    border-radius: 10px;
+    width: 400px;
+    margin:10% auto;
+    padding: 40px 0;
+}
+.board {
+    width: 350px;
+    height:350px;
+    background: rgb(40,40,40);
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+/* Game Settings */
+.settings {
+    padding: 60px 25px;
+}
+.player-choice p, .player-choice button, .marker-choice p, .marker-choice button {
+    color: rgba(220,220,220,1);
+    margin:10px auto;
+}
+.player-choice, .marker-choice {
+    display: block;
+    text-align: center;
+    font-family: 'Architects Daughter', Helvetica, sans-serif;
+}
+.player-choice p, .marker-choice p {
+    font-size: 2em;
+}
+.player-choice button, .marker-choice button {
+    font-size: 1.5em;
+    opacity:.6;
+}
+.player-choice button:hover, .marker-choice button:hover {
+    opacity:1;
+    border:2px dashed rgba(230,230,230,.5);
+    border-radius:20px;
+}
+.marker-choice {
+    display:none;
+}
+.board button {
+    background:none;
+    border:none;
+    font-family: 'Architects Daughter', Helvetica, sans-serif;
+}
