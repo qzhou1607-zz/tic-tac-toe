@@ -77,6 +77,23 @@ APP = {
             $('<li id=' + i + '></li>').appendTo($('.boxes'));
         }
     },
+    getRightAlert: function() {
+        var self = this;
+        if(self.currentPlayer === 1) {
+            self.promptAlert('player-one-alert');
+            self.hideAlert('player-two-alert');
+        } else {
+            self.promptAlert('player-two-alert');
+            self.hideAlert('player-one-alert');
+        }
+    },
+    promptAlert:function(alertClass) {
+        $('.' + alertClass).animate({top:'-50px'});
+    },
+    hideAlert:function(alertClass) {
+        $('.' + alertClass).animate({top:'0px'});
+    },
+    //get random turn
     getTurn: function() {
         return Math.floor(Math.random()*2 + 1);
     },
@@ -99,6 +116,7 @@ APP = {
                 self.showWinCombo(self.checkWin(marker));
             } else {
                 self.currentPlayer = 3 - self.currentPlayer;//take turns
+                self.getRightAlert();
             }
         });
     },
@@ -142,6 +160,7 @@ APP = {
             self.setMarker(this); 
             $('.settings').hide();
             self.drawboard(); 
+            self.getRightAlert();
         }); 
         self.currentPlayer = self.getTurn(); //get a random player
         self.initializeBoxes();
