@@ -99,11 +99,37 @@ APP = {
         $('.score-1 .points').text(self.score1);
         $('.score-2 .points').text(self.score2);
     },
-    showMessage: function(player,type) {
+    updatePlayerInfo: function() {
+        var self = this;
+        if (!self.secondPlayer) {
+            $('.score-1 .name').text('You');
+            $('.player-one-alert').text('You');
+            $('.score-2 .name').text('Computer');
+            $('.player-two-alert').text('Computer');
+        } else {
+            $('.score-1 .name').text('Player 1');
+            $('.player-one-alert').text('Player 1');
+            $('.score-2 .name').text('Player 2');
+            $('.player-two-alert').text('Player 2');
+        }
+    },
+    showMessage: function(playerNumber,type) {
+        var player = '';
+        if (self.secondPlayer === false) {
+            if (playerNumber === 1) {
+                    player = 'You';
+                } else {
+                    player = 'Computer';
+                }
+        } else {
+            player = 'Player ' + playerNumber;
+        }
         if (type === 'win') {
-            $('.win-message').text('Player ' + player + ' won!');
+            
+            $('.win-message').text(player + ' won!');
             $('.win-message').fadeIn();
         } else if (type === 'lose') {
+            $('.lose-message').text(player + ' Lose!');
             $('.lose-message').fadeIn();
         } else {
             $('.equal-message').fadeIn();
@@ -125,6 +151,11 @@ APP = {
     //update boxes on click, check for winner, and switch turns
     play:function() {
         var self = this;
+        if (self.currentPlayer === 2 && !self.secondPlayer) {
+            setTimeout(function() {
+                self.computerPlay();
+            },1000);
+        }
         $('.boxes li').on('click',function() {
             if ($(this).html() != '') { //prevent double click
                 return;
@@ -219,21 +250,35 @@ APP = {
                 return empty[0];
             } 
         }
-        return false;
+        //find a spot
+        for (var i = 0; i < combinations.length; i++) {
+            var filled = [];
+            var empty = [];
+            var combination = combinations[i];
+            for (var j = 0; j < combination.length; j++) {
+                if (self.record[combination[j]] === self.secondPlayerMarker) {
+                    filled.push(combination[j]);
+                }
+                if (self.record[combination[j]] === '') {
+                    empty.push(combination[j]);
+                }
+            }
+            
+            if (empty.length === 3 || filled.length === 1 && empty.length === 2) {
+                return empty[0];
+            } 
+        }
+        //if no option available
+        for (var field in self.record) {
+            if (self.record[field] === '') {
+                return field;
+            }
+        }
     },
     computerPlay:function() {
         self = this;
-        var move;
-        if (self.bestComputerMove() != false) {
-            move = self.bestComputerMove();
-        } else {
-            for(var field in self.record) {
-                if (self.record[field] === '') {
-                    move = field;
-                    break;
-                }
-            }
-        }
+        var move;   
+        move = self.bestComputerMove();
         console.log(move);
         $('#' + move).trigger('click');
     },
@@ -263,7 +308,7 @@ APP = {
     },
     initializeGame: function() {
         var self = this;
-        self.initializeRecord();
+        self.initializeRecord();        
         //save player setting
         $('.player-choice button').on('click', function() {
             self.secondPlayer = self.hasSecondPlayer(this);
@@ -271,22 +316,19 @@ APP = {
             $('.player-choice').hide();
             //show marker setting
             $('.marker-choice').fadeIn();
+            self.updatePlayerInfo();
         });
         $('.marker-choice button').on('click', function() {
             //save marker setting
             self.setMarker(this); 
             $('.settings').hide();
             self.drawboard(); 
+            self.currentPlayer = self.getTurn(); //get a random player
             self.getRightAlert();
+            self.initializeBoxes();
+            self.play();
         }); 
-        self.currentPlayer = self.getTurn(); //get a random player
-        self.initializeBoxes();
-        self.play();
-//        if (!self.secondPlayer && self.currentPlayer === 2) {
-//            setTimeout(function() {
-//                self.computerPlay();
-//            }, 1000);
-//        }
+        
     },
     //not change setting, but restart a new round
     restartGame: function() {
