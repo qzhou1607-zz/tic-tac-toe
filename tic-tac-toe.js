@@ -6,6 +6,7 @@
 APP = {
     score1:0,
     score2:0,
+    currentPlayer:0,
     secondPlayer: false,
     firstPlayerMarker:'',
     secondPlayerMarker:'',
@@ -69,6 +70,62 @@ APP = {
         this.drawline(canvas,4,48.5,296,48.5);
         this.drawline(canvas,4,98.5,296,98.5);
     },
+    //align boxes and enable click binding
+    initializeBoxes:function() {
+        var self = this;
+        for(var i = 1; i <= 9; i++) {
+            $('<li id=' + i + '></li>').appendTo($('.boxes'));
+        }
+    },
+    getTurn: function() {
+        return Math.floor(Math.random()*2 + 1);
+    },
+    //update boxes on click, check for winner, and switch turns
+    play:function() {
+        var self = this;
+        $('.boxes li').on('click',function() {
+            var id = $(this).attr('id');
+            var marker = self.firstPlayerMarker;
+            if(self.currentPlayer == 2) {
+                marker = self.secondPlayerMarker;
+            }
+            $(this).html(marker);//update box
+            self.record[id] = marker;//update record
+            
+            //check win
+            if (self.checkWin(marker) !== false) { //win!
+                //alert('win!');
+                console.log(self.checkWin(marker));
+                self.showWinCombo(self.checkWin(marker));
+            } else {
+                self.currentPlayer = 3 - self.currentPlayer;//take turns
+            }
+        });
+    },
+    checkWin: function(marker) {
+        var self = this;
+        var combinations = self.winCombos;
+        for (var i = 0; i < combinations.length; i++) {
+            var win = true;
+            var combination = combinations[i];
+            
+            for (var j = 0; j < combination.length; j++) {
+                if (self.record[combination[j]] != marker) {
+                    win = false;
+                } 
+            }
+            console.log(win);
+            if(win === true) {
+                return combination;
+            }
+        }
+        return false;
+    },
+    showWinCombo: function(combo) {
+        for (var i = 0; i < combo.length; i++) {
+            $('#'  + combo[i]).addClass('win');
+        }
+    },
     initializeGame: function() {
         var self = this;
         self.initializeRecord();
@@ -84,9 +141,11 @@ APP = {
             //save marker setting
             self.setMarker(this); 
             $('.settings').hide();
-            self.drawboard();
-        });  
-        
+            self.drawboard(); 
+        }); 
+        self.currentPlayer = self.getTurn(); //get a random player
+        self.initializeBoxes();
+        self.play();
     },
 }
 
