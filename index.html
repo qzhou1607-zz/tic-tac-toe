@@ -15,6 +15,21 @@ and open the template in the editor.
         <script src="tic-tac-toe.js"></script>
     </head>
     <body>
+        <div class="scores">
+            <div class="score-1">
+                <span class="name">Player 1</span>
+                <br>
+                <span class="points">0</span>
+            </div>
+            <div class="divider">
+                &#124;
+            </div>
+            <div class="score-2">
+                <span class="name">Player 2</span>
+                <br>
+                <span class="points">0</span>
+            </div>
+        </div>
         <div class="container">
             <div class="player-one-alert">Player 1</div>
             <div class="player-two-alert">Player 2</div>
@@ -31,6 +46,16 @@ and open the template in the editor.
                         <button class="choose-o">O</button>
                     </div>
                 </div>
+                <div class="win-message">
+                    <p>You won!</p>
+                </div>
+                <div class="lose-message">
+                    <p>Sorry, you've lost...</p>
+                </div>
+                <div class="equal-message">
+                    <p>It's a draw...</p>
+                </div>
+                
                 <canvas id="my-canvas"></canvas>
                 <ul class="boxes"></ul>
             </div>

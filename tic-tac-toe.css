@@ -11,7 +11,7 @@ and open the template in the editor.
     background: rgb(248,180,135);
     border-radius: 10px;
     width: 400px;
-    margin:10% auto;
+    margin:12% auto;
     padding: 40px 0;
     position:relative;
 }
@@ -21,6 +21,7 @@ and open the template in the editor.
     background: rgb(40,40,40);
     border-radius: 10px;
     margin: 0 auto;
+    position:relative;
 }
 
 /* Game Settings */
@@ -57,6 +58,7 @@ and open the template in the editor.
     font-family: 'Architects Daughter', Helvetica, sans-serif;
 }
 
+/* game board*/
 #my-canvas {
   width: 330px;
   height: 330px;
@@ -95,6 +97,8 @@ and open the template in the editor.
     font-weight: bold;
     z-index: -99;
 }
+
+/* action alert */
 .player-one-alert {
     background: rgba(0,200,200,1);
     left: 15px;
@@ -104,6 +108,7 @@ and open the template in the editor.
     right: 15px;
 }
 
+/* result alert */
 .win {
   -webkit-animation: rotating 2s linear infinite;
   -moz-animation: rotating 2s linear infinite;
@@ -143,4 +148,40 @@ and open the template in the editor.
     -o-transform: rotateY(360deg);
     transform: rotateY(360deg);
   }
+}
+
+/* score board */
+
+.scores {
+    margin:20px auto;
+    text-align: center;
+}
+
+.score-1, .divider, .score-2 {
+    display: inline-block;
+    text-align: center;
+    font-family: 'Architects Daughter', Helvetica, sans-serif;
+}
+
+.divider {
+    font-size: 2em;
+    margin:0 5px;
+}
+
+/* message */
+
+.win-message, .lose-message, .equal-message {
+    font-family: 'Architects Daughter', Helvetica, sans-serif;
+    color: #fff;
+    position: absolute;
+    top:0;
+    text-align: center;
+    font-size: 1.5em;
+    padding-top:20px;
+    box-sizing: border-box;
+    background: rgba(40,40,40,.6);
+    width: 100%;
+    height: 100%;
+    display:none;
+    z-index:1000;
 }

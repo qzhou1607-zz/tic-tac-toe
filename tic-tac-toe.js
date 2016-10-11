@@ -73,6 +73,7 @@ APP = {
     //align boxes and enable click binding
     initializeBoxes:function() {
         var self = this;
+        $('.boxes').empty();
         for(var i = 1; i <= 9; i++) {
             $('<li id=' + i + '></li>').appendTo($('.boxes'));
         }
@@ -92,6 +93,30 @@ APP = {
     },
     hideAlert:function(alertClass) {
         $('.' + alertClass).animate({top:'0px'});
+    },
+    updateScore: function() {
+        var self = this;
+        $('.score-1 .points').text(self.score1);
+        $('.score-2 .points').text(self.score2);
+    },
+    showMessage: function(player,type) {
+        if (type === 'win') {
+            $('.win-message').text('Player ' + player + ' won!');
+            $('.win-message').fadeIn();
+        } else if (type === 'lose') {
+            $('.lose-message').fadeIn();
+        } else {
+            $('.equal-message').fadeIn();
+        }
+    },
+    hideMessage: function(type) {
+        if (type === 'win') {
+            $('.win-message').fadeOut();
+        } else if (type === 'lose') {
+            $('.lose-message').fadeOut();
+        } else {
+            $('.equal-message').fadeOut();
+        }
     },
     //get random turn
     getTurn: function() {
@@ -114,6 +139,23 @@ APP = {
                 //alert('win!');
                 console.log(self.checkWin(marker));
                 self.showWinCombo(self.checkWin(marker));
+                
+                if (self.currentPlayer === 1) {
+                    self.score1 += 1;
+                } else {
+                    self.score2 += 1;
+                }
+                self.updateScore();
+                setTimeout(function() {
+                    self.showMessage(self.currentPlayer,'win');
+                },2000);
+                setTimeout(function() {
+                    self.restartGame(); //start a new round
+                },2000);
+                setTimeout(function() {
+                    self.hideMessage('win');
+                },2000);
+                
             } else {
                 self.currentPlayer = 3 - self.currentPlayer;//take turns
                 self.getRightAlert();
@@ -166,6 +208,14 @@ APP = {
         self.initializeBoxes();
         self.play();
     },
+    //not change setting, but restart a new round
+    restartGame: function() {
+        self = this;
+        self.currentPlayer = self.getTurn(); //get a random player
+        self.initializeRecord();
+        self.initializeBoxes();
+        self.play();
+    }
 }
 
 $(document).ready(function() {
