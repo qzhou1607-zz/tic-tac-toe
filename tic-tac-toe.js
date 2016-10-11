@@ -70,7 +70,7 @@ APP = {
         this.drawline(canvas,4,48.5,296,48.5);
         this.drawline(canvas,4,98.5,296,98.5);
     },
-    //align boxes and enable click binding
+    //align boxes 
     initializeBoxes:function() {
         var self = this;
         $('.boxes').empty();
@@ -126,20 +126,26 @@ APP = {
     play:function() {
         var self = this;
         $('.boxes li').on('click',function() {
+            if ($(this).html() != '') { //prevent double click
+                return;
+            }
             var id = $(this).attr('id');
             var marker = self.firstPlayerMarker;
             if(self.currentPlayer == 2) {
                 marker = self.secondPlayerMarker;
             }
+            
             $(this).html(marker);//update box
             self.record[id] = marker;//update record
+            self.filledNumber += 1;
+            
             
             //check win
-            if (self.checkWin(marker) !== false) { //win!
+            if (self.checkWin(marker) != false) { //win!
                 //alert('win!');
                 console.log(self.checkWin(marker));
                 self.showWinCombo(self.checkWin(marker));
-                
+                self.showMessage(self.currentPlayer,'win');
                 if (self.currentPlayer === 1) {
                     self.score1 += 1;
                 } else {
@@ -147,20 +153,89 @@ APP = {
                 }
                 self.updateScore();
                 setTimeout(function() {
-                    self.showMessage(self.currentPlayer,'win');
-                },2000);
-                setTimeout(function() {
                     self.restartGame(); //start a new round
-                },2000);
+                },4000);
                 setTimeout(function() {
                     self.hideMessage('win');
-                },2000);
+                },4000);
                 
             } else {
+                if (self.filledNumber >= 9) { //it's a draw
+                    self.showMessage(self.currentPlayer,'draw');
+                    setTimeout(function() {
+                        self.restartGame(); //start a new round
+                    },4000);
+                    setTimeout(function() {
+                        self.hideMessage('draw');
+                    },4000);
+                    return;
+                }
                 self.currentPlayer = 3 - self.currentPlayer;//take turns
                 self.getRightAlert();
+                if (!self.secondPlayer && self.currentPlayer === 2) {
+                    setTimeout(function() {
+                        self.computerPlay();
+                    }, 1000);
+                }
             }
         });
+    },
+    bestComputerMove:function() {
+        var self = this;
+        var combinations = self.winCombos;
+        //To win
+        for (var i = 0; i < combinations.length; i++) {
+            var filled = [];
+            var empty = [];
+            var combination = combinations[i];
+            for (var j = 0; j < combination.length; j++) {
+                if (self.record[combination[j]] === self.secondPlayerMarker) {
+                    filled.push(combination[j]);
+                }
+                if (self.record[combination[j]] === '') {
+                    empty.push(combination[j]);
+                }
+            }
+            
+            if (filled.length === 2 && empty.length === 1) {
+                return empty[0];
+            } 
+        }
+        //To block
+        for (var i = 0; i < combinations.length; i++) {
+            var filled = [];
+            var empty = [];
+            var combination = combinations[i];
+            for (var j = 0; j < combination.length; j++) {
+                if (self.record[combination[j]] === self.firstPlayerMarker) {
+                    filled.push(combination[j]);
+                }
+                if (self.record[combination[j]] === '') {
+                    empty.push(combination[j]);
+                }
+            }
+            
+            if (filled.length === 2 && empty.length === 1) {
+                return empty[0];
+            } 
+        }
+        return false;
+    },
+    computerPlay:function() {
+        self = this;
+        var move;
+        if (self.bestComputerMove() != false) {
+            move = self.bestComputerMove();
+        } else {
+            for(var field in self.record) {
+                if (self.record[field] === '') {
+                    move = field;
+                    break;
+                }
+            }
+        }
+        console.log(move);
+        $('#' + move).trigger('click');
     },
     checkWin: function(marker) {
         var self = this;
@@ -207,13 +282,21 @@ APP = {
         self.currentPlayer = self.getTurn(); //get a random player
         self.initializeBoxes();
         self.play();
+//        if (!self.secondPlayer && self.currentPlayer === 2) {
+//            setTimeout(function() {
+//                self.computerPlay();
+//            }, 1000);
+//        }
     },
     //not change setting, but restart a new round
     restartGame: function() {
         self = this;
+        self.hideAlert('player-one-alert');
+        self.hideAlert('player-two-alert');
         self.currentPlayer = self.getTurn(); //get a random player
         self.initializeRecord();
         self.initializeBoxes();
+        self.getRightAlert();
         self.play();
     }
 }
